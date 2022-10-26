@@ -62,8 +62,6 @@ export class ErrosLogService {
       )
       .from('erros_logs')
       .whereBetween('data_ocorrencia', [end_date, start_date])
-      .limit(limite)
-      .offset((page - 1) * limite)
 
     const queryTotal = query
       .clone()
@@ -71,11 +69,14 @@ export class ErrosLogService {
       .count('id as quant')
       .from('erros_logs')
       .groupBy('id')
-    console.log(queryTotal.toQuery())
-    const re = await conn.raw(
-      `select count(id) from (${queryTotal.toQuery()}) as total`
+
+    query.limit(limite).offset((page - 1) * limite)
+
+    //console.log(queryTotal.toQuery())
+    const totalRegistro = await conn.raw(
+      `select count(id) as total from (${queryTotal.toQuery()}) as total`
     )
-    console.log(re)
+
     const total = await queryTotal
     // const total = await conn.count('id as quant').from('erros_logs')
 
@@ -88,7 +89,7 @@ export class ErrosLogService {
 
     return {
       erros,
-      total: Number(total[0].quant),
+      total: Number(totalRegistro[0][0].total),
     }
   }
   async getErroDetail(id: number) {
