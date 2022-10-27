@@ -1,3 +1,4 @@
+import { ControleVersaoModule } from './controle_versao/controle-versao.module'
 import { ErrosLogController } from './erros_log/erroslog.controller'
 import { ErrosLogService } from './erros_log/erroslog.service'
 import { ErrosLogModule } from './erros_log/erroslog.module'
@@ -15,9 +16,12 @@ import { DatabaseModule } from './database/database.module'
 import { SiteSuccessDatabaseService } from './database/site-success-database.service'
 import { UserModule } from './user/user.module'
 import { DatabaseService } from './database/database.service'
+import { ControleVersaoService } from './controle_versao/controle-versao.service'
+import { ControleVersaoController } from './controle_versao/controle-versao.controller'
 
 @Module({
   imports: [
+    ControleVersaoModule,
     ErrosLogModule,
     ConfigParametrosModule,
     EventosModule,
@@ -29,8 +33,9 @@ import { DatabaseService } from './database/database.service'
       isGlobal: true,
     }),
   ],
-  controllers: [ErrosLogController, AppController],
+  controllers: [ErrosLogController, AppController, ControleVersaoController],
   providers: [
+    ControleVersaoService,
     ErrosLogService,
     ConfigParametrosService,
     SiteSuccessDatabaseService,
