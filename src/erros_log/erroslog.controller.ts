@@ -27,7 +27,7 @@ export class ErrosLogController {
     const { page, limit, end, start } = query
 
     if (!start || !end) {
-      throw new BadRequestException('Ô filha da puta, cadê a data??')
+      throw new BadRequestException(' cadê a data??')
     }
 
     const { total, erros } = await this.errosLogService.getErros(

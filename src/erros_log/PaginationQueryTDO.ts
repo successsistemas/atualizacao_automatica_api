@@ -4,6 +4,10 @@ export type PaginationQueryTDO = {
   start: string
   end: string
 }
+export type PaginationQueryVersaoTDO = {
+  limit: number
+  page: number
+}
 export type ErrorOrderByTDO = {
   id: number
 }
