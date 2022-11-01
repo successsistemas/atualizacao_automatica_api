@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common'
 import { DatabaseService } from 'src/database/database.service'
 import { readdir, promises } from 'fs'
@@ -67,5 +68,53 @@ export class ControleVersaoService {
       versoes,
       total: totalRegistro[0][0].total,
     }
+  }
+
+  async getSingleVersion(id: string) {
+    try {
+      const conn = await this.databaseService.getConnection()
+      const query = conn.select().from('versoes').where('id', '=', id)
+      const result = await query
+      if (result.length <= 0)
+        throw new NotFoundException(`Versão com o id ${id} não foi encontrado`)
+      return result
+    } catch (e) {
+      throw new InternalServerErrorException(e?.message)
+    }
+  }
+
+  async edit(id: string, versao: Versao) {
+    const conn = await this.databaseService.getConnection()
+    const query = conn.select().from('versoes').where('id', '=', id)
+    const result = await query
+    if (result.length <= 0)
+      throw new NotFoundException(`Versão com o id ${id} não foi encontrado`)
+
+    const update = await conn
+      .update(versao)
+      .into('versoes')
+      .where('id', '=', id)
+
+    return update
+  }
+
+  async deleteSingleVersion(id: string) {
+    const conn = await this.databaseService.getConnection()
+    const query = conn.select().from('versoes').where('id', '=', id)
+    const result = await query
+    if (result.length <= 0)
+      throw new NotFoundException(`Versão com o id ${id} não foi encontrado`)
+    const resultDelete = conn
+      .delete()
+      .from('versoes')
+      .where('id', '=', id)
+      .then(result => {
+        console.log(result)
+      })
+      .catch(error => {
+        throw new BadRequestException(error?.message)
+      })
+    console.log(resultDelete)
+    return result
   }
 }

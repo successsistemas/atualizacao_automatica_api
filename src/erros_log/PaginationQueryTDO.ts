@@ -8,6 +8,9 @@ export type PaginationQueryVersaoTDO = {
   limit: number
   page: number
 }
+export type SigleVersionQuery = {
+  id: string
+}
 export type ErrorOrderByTDO = {
   id: number
 }

@@ -1,6 +1,26 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { readdir, promises } from 'fs'
-import { PaginationQueryVersaoTDO } from 'src/erros_log/PaginationQueryTDO'
+import { StatusCodes } from 'http-status-codes'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { CurrentUser } from 'src/auth/utils/currentUser'
+import {
+  PaginationQueryVersaoTDO,
+  SigleVersionQuery,
+} from 'src/erros_log/PaginationQueryTDO'
+import { UsuarioBody } from 'src/tdo/usuarioDTO'
 import { ControleVersaoService } from './controle-versao.service'
 import { Versao } from './types'
 
@@ -21,5 +41,38 @@ export class ControleVersaoController {
   @Get('versionnames')
   async getFilesName() {
     return this.controleVersaoService.getVersionsFileName()
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('sigle-version')
+  getSingleVersion(@Query() query: SigleVersionQuery) {
+    const { id } = query
+    if (!id)
+      throw new BadRequestException('Precisa de um Id para efetuar a busca.')
+    return this.controleVersaoService.getSingleVersion(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(StatusCodes.NO_CONTENT)
+  @Delete('sigle-version')
+  deleteVersion(@Query() query: SigleVersionQuery) {
+    const { id } = query
+    if (!id)
+      throw new BadRequestException(
+        'Precisa passar um id para completar a operação.'
+      )
+    HttpException
+    return this.controleVersaoService.deleteSingleVersion(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('sigle-version')
+  atualizar(@Query() query: SigleVersionQuery, @Body() body: Versao) {
+    const { id } = query
+    if (!id)
+      throw new BadRequestException(
+        'Precisa passar um id para completar a operação.'
+      )
+    HttpException
+    return this.controleVersaoService.edit(id, body)
   }
 }
