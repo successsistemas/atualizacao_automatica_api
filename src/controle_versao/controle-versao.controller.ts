@@ -60,7 +60,6 @@ export class ControleVersaoController {
       throw new BadRequestException(
         'Precisa passar um id para completar a operação.'
       )
-    HttpException
     return this.controleVersaoService.deleteSingleVersion(id)
   }
 
@@ -72,7 +71,7 @@ export class ControleVersaoController {
       throw new BadRequestException(
         'Precisa passar um id para completar a operação.'
       )
-    HttpException
+
     return this.controleVersaoService.edit(id, body)
   }
 }

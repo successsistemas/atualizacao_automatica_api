@@ -71,16 +71,12 @@ export class ControleVersaoService {
   }
 
   async getSingleVersion(id: string) {
-    try {
-      const conn = await this.databaseService.getConnection()
-      const query = conn.select().from('versoes').where('id', '=', id)
-      const result = await query
-      if (result.length <= 0)
-        throw new NotFoundException(`Versão com o id ${id} não foi encontrado`)
-      return result
-    } catch (e) {
-      throw new InternalServerErrorException(e?.message)
-    }
+    const conn = await this.databaseService.getConnection()
+    const query = conn.select().from('versoes').where('id', '=', id)
+    const result = await query
+    if (result.length <= 0)
+      throw new NotFoundException(`Versão com o id ${id} não foi encontrado`)
+    return result
   }
 
   async edit(id: string, versao: Versao) {
